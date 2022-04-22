@@ -42,8 +42,18 @@ export const cartSlice = createSlice({
     },
     decrement: (state, { payload }) => {
       const itemIndex = state.cart.findIndex((item) => item.id === payload.id);
-      state.cart[itemIndex].quantity -= 1;
-      localStorage.setItem("cartItems", JSON.stringify(state.cart));
+      if (state.cart[itemIndex].quantity > 1) {
+        state.cart[itemIndex].quantity -= 1;
+        localStorage.setItem("cartItems", JSON.stringify(state.cart));
+      } else {
+        const isTrue = window.confirm("Item will be removed from cart");
+        if (isTrue) {
+          const newItems = state.cart.filter((item) => item.id !== payload.id);
+          state.cart = newItems;
+          localStorage.setItem("cartItems", JSON.stringify(state.cart));
+        }
+      }
+
       // toast.info("Decreased product quantity", {
       //     position: "bottom-left",
       // });
